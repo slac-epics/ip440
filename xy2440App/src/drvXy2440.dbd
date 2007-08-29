@@ -1,3 +1,0 @@
-# Xy2440 Binary Input Module Driver Support
-driver(drvXy2440)
-registrar(drvXy2440Registrar)
