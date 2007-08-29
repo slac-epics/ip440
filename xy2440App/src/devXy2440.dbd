@@ -1,4 +1,0 @@
-# Xy2440 Binary Input Module Device Support
-device(bi,         INST_IO, devBiXy2440,         "XYCOM-2440")
-device(mbbi,       INST_IO, devMbbiXy2440,       "XYCOM-2440")
-device(mbbiDirect, INST_IO, devMbbiDirectXy2440, "XYCOM-2440")

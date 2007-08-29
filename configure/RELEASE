@@ -10,6 +10,10 @@
 
 TEMPLATE_TOP=$(EPICS_BASE)/templates/makeBaseApp/top
 
+EPICS_EXTENSIONS_RELEASE=/afs/slac/g/lcls/build/epics/extensions/extensions-R3-14-8-2
+#If using macro substitutions, point MSI at the binary:
+MSI=$(EPICS_EXTENSIONS_RELEASE)/bin/$(EPICS_HOST_ARCH)/msi
+
 # If you don't want to install into $(TOP) then
 # define INSTALL_LOCATION_APP here
 #INSTALL_LOCATION_APP=<fullpathname>
@@ -17,8 +21,14 @@ TEMPLATE_TOP=$(EPICS_BASE)/templates/makeBaseApp/top
 #If using the sequencer, point SNCSEQ at its top directory:
 #SNCSEQ=$(EPICS_BASE)/../modules/soft/seq
 
+EPICS_MODULES=/afs/slac/g/lcls/build/epics/modules
+EPICS_BASE_RELEASE=/afs/slac/g/lcls/build/epics/base/base-R1-0-0
+
+#  IPAC release V2-7 or later is required.
+IPAC=$(EPICS_MODULES)/ipac/ipac-R1-0-1
+
 # EPICS_BASE usually appears last so other apps can override stuff:
-EPICS_BASE=/afs/slac/g/lcls/build/epics/base/Devl
+EPICS_BASE=$(EPICS_BASE_RELEASE)
 
 #Capfast users may need the following definitions
 #CAPFAST_TEMPLATES=
