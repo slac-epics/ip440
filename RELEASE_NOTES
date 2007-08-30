@@ -9,11 +9,15 @@
 #  Rev:  dd-mmm-yyyy, Reviewer's Name    (USERNAME)
 #--------------------------------------------------------------
 #  Mod:
-#        29-Aug-y2007, Kristi Luchini     (LUCHINI):
-#          add test databases
+#        30-Aug-2007, K. Luchini         (LUCHINI):
+#           release xy2440-R1-0-2
+#        29-Aug-2007, K. Luchini         (LUCHINI):
+#           release xy2440-R1-0-1 
 #
 #==============================================================
 #
+xy2440-R1-0-2:   build with ipac-R1-0-2 instead of ipac-R1-0-1
+
 xy2440-R1-0-1:   Change test databases
 
 xy2440-R1-0-0:   Initial release
