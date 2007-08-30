@@ -9,9 +9,11 @@
 #  Rev:  dd-mmm-yyyy, Reviewer's Name    (USERNAME)
 #--------------------------------------------------------------
 #  Mod:
-#        dd-mmm-yyyy, First Lastname     (USERNAME):
-#          comment
+#        29-Aug-y2007, Kristi Luchini     (LUCHINI):
+#          add test databases
 #
 #==============================================================
 #
+xy2440-R1-0-1:   Change test databases
+
 xy2440-R1-0-0:   Initial release
