@@ -2,7 +2,9 @@
 TOP = ../..
 include $(TOP)/configure/CONFIG
 
-DBD += Xy2440.dbd
+HTMLS += xycomIpac.html
+
+DBD   += Xy2440.dbd
 
 # Source files (for depends target):
 LIBSRCS += drvXy2440.c
