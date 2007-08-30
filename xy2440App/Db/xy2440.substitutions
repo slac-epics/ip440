@@ -2,7 +2,7 @@
 #
 # Abs:  Digital Input Channels
 #
-# Name: di_test.substitutions
+# Name: xy2440.substitutions
 #
 # Auth: 29-Aug-2007, K. Luchini       (LUCHINI)
 # Rev : dd-mmm-yyyy, Reviewer's Name  (USERNAME)
@@ -14,7 +14,7 @@
 #==============================================================================
 #
 file xy2440.template{
-   pattern { DEV                       , C   , PORT , CH , DESC            , SCAN        , ZNAM       , ONAM     }
+   pattern { DEV                     , C      , PORT , CH , DESC            , SCAN        , ZNAM       , ONAM     }
            { "DI:C0P$(PORT):B$(CH)"  , "bi0"  , 0    , 0  , "C1 Flt1 In 0"  , ".1 second" , "Inactive" , "Active" }
            { "DI:C0P$(PORT):B$(CH)"  , "bi0"  , 0    , 1  , "C1 Flt1 In 1"  , ".1 second" , "Inactive" , "Active" }
            { "DI:C0P$(PORT):B$(CH)"  , "bi0"  , 0    , 2  , "C1 Flt1 In 2"  , ".1 second" , "Inactive" , "Active" }
@@ -53,7 +53,7 @@ file xy2440.template{
 }
 
 file ip440.template{
-   pattern { DEV                       , C   ,PORT  , CH , DESC           , SCAN        , ZNAM       , ONAM     }
+   pattern { DEV                     , C      ,PORT , CH , DESC           , SCAN        , ZNAM       , ONAM     }
            { "DI:C1P$(PORT):B$(CH)"  , "bi1"  , 0   , 0  , "C2 Flt1 In 0" , ".1 second" , "Inactive" , "Active" }
            { "DI:C1P$(PORT):B$(CH)"  , "bi1"  , 0   , 1  , "C2 Flt1 In 1" , ".1 second" , "Inactive" , "Active" }
            { "DI:C1P$(PORT):B$(CH)"  , "bi1"  , 0   , 2  , "C2 Flt1 In 2" , ".1 second" , "Inactive" , "Active" }
