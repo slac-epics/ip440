@@ -24,6 +24,7 @@
 #==============================================================
 #
 xy2440-R1-0-6:   Build with base-R3-14-9-lcls1
+                 Build with ipac-R2-8-lcls4
                  Replace CONFIG_APP with CONFIG_SITE
                  Add RELEASE_SITE
 
