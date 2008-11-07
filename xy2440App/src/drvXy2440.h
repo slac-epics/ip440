@@ -16,6 +16,10 @@ Author:
 Created:
       12th November 2002
 
+Modification:
+      06-Nov-2008, K. Luchini (luchini@slac.stanford.edu)
+        chagned ptr to map2440 in structure config2440 to volatile
+
 Copyright (c) 2002 Andy Foster
 
     This library is free software; you can redistribute it and/or
@@ -129,7 +133,7 @@ struct config2440
     char              *pName;                     /* Name to identify this card           */
     unsigned short    card;                       /* Number of IP carrier board           */
     unsigned short    slot;                       /* Slot number in carrier board         */
-    struct map2440    *brd_ptr;                   /* base address of the input board      */
+    volatile struct map2440    *brd_ptr;          /* base address of the input board      */
     unsigned short    param;                      /* parameter mask for configuring board */
     unsigned char     e_mode;                     /* enhanced operation flag              */
     unsigned char     mask_reg;                   /* output port mask register            */
