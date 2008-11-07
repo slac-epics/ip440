@@ -9,6 +9,9 @@
 #  Rev:  dd-mmm-yyyy, Reviewer's Name    (USERNAME)
 #--------------------------------------------------------------
 #  Mod:
+#        06-Nov-2008, K. Luchini         (LUCHINI):
+#           changed ptr to memory in config2440 strcutre
+#           to volatile
 #        21-Feb-2008, K. Luchini         (LUCHINI):
 #           release xy2440-R1-0-6
 #        10-Dec-2007, K. Luchini         (LUCHINI):
@@ -23,6 +26,8 @@
 #
 #==============================================================
 #
+xy2440-R1-0-7:   Change ptr to memory to volatile
+
 xy2440-R1-0-6:   Build with base-R3-14-9-lcls1
                  Build with ipac-R2-8-lcls4
                  Replace CONFIG_APP with CONFIG_SITE
@@ -43,3 +48,5 @@ xy2440-R1-0-2:   Build with ipac-R1-0-2 instead of ipac-R1-0-1
 xy2440-R1-0-1:   Change test databases
 
 xy2440-R1-0-0:   Initial release
+
+# End of file
