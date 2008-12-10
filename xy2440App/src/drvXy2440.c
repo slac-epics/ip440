@@ -61,6 +61,7 @@ Copyright (c) 2002 Andy Foster
 #include "epicsInterrupt.h"
 #include "epicsExport.h"
 #include "iocsh.h"
+#include "basicIoOps.h"
 #endif
 
 #include "drvIpac.h"
@@ -105,6 +106,7 @@ int xy2440Report( int interest )
         plist->id_prom[i] = xy2440Input((unsigned int *)&idptr[j]);
     
       printf("\nBoard Status Information: %s\n", plist->pName);
+      printf("\nBase IO Address:           0x%lx\n", (unsigned long)plist->brd_ptr);
       printf("\nInterrupt Enable Register:   %02x",plist->enable);
       printf("\nInterrupt Vector Register:   %02x",plist->vector);
       printf("\nLast Interrupting Channel:   %02x",plist->last_chan);
@@ -358,7 +360,7 @@ void xy2440SetConfig( char *pName, unsigned short card, unsigned short slot,
   pconfig->pName      = pName;
   pconfig->card       = card;
   pconfig->slot       = slot;
-  pconfig->brd_ptr    = (struct map2440 *)ipmBaseAddr(card, slot, ipac_addrIO);
+  pconfig->brd_ptr    = (volatile struct map2440 *)ipmBaseAddr(card, slot, ipac_addrIO);
   pconfig->mask_reg   = OUTPUT_MASK;  /* Mask writes to all outputs */
   pconfig->e_mode     = mode;
   pconfig->intHandler = intHandler;
@@ -511,7 +513,7 @@ long xy2440Read( char *name, short port, short bit, int readFlag,
                       unsigned short *pval, int debug )
 {
   struct config2440 *plist;
-  struct map2440    *map_ptr;
+  volatile struct map2440    *map_ptr;
   unsigned char     port0;
   unsigned char     port1;
   unsigned char     port2;
@@ -591,13 +593,13 @@ long xy2440Read( char *name, short port, short bit, int readFlag,
 
 unsigned char xy2440Input( unsigned int *addr ) 
 {
-  return((unsigned char) *((char *)addr));
+  return((unsigned char) in_8((volatile unsigned char *)addr));
 }
 
 
 void xy2440Output( unsigned int *addr, int b )
 {
-  *((char *)addr) = (char)b; 
+  *((volatile char *)addr) = (char)b; 
 }
 
 
