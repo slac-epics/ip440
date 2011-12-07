@@ -21,7 +21,7 @@ EPICS_MODULES=$(MODULES_SITE_TOP)
 # IOC apps or other Support apps
 # =============================================================
 IPAC_MODULE_VERSION=ipac-R2-8-lcls8
-MISCUTILS_MODULE_VERSION=miscUtils-R2-2-0
+MISCUTILS_MODULE_VERSION=miscUtils-R2-2-2
 
 # ============================================================
 #  IPAC release V2-7 or later is required.
