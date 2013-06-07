@@ -108,14 +108,12 @@ struct map2440
 {
   struct
    {
-     unsigned char nu0;                  
-     unsigned char b_select;  /* bank select register */
+     volatile unsigned short b_select;
    } port[8];
-   unsigned char nu1;                  
-   unsigned char nu2[14];     /* not used */
-   unsigned char ier;         /* interrupt enable register */
-   unsigned char nu3[15];     /* not used */
-   unsigned char ivr;         /* interrupt vector register */
+   volatile unsigned short nu0[7];                  
+   volatile short ier;        /* interrupt enable register */
+   volatile short nu1[7];     /* not used */
+   volatile short ivr;        /* interrupt vector register */
 };
 
 
@@ -139,7 +137,7 @@ struct config2440
     unsigned char     deb_clock;                  /* debounce clock select register       */
     unsigned char     enable;                     /* interrupt enable register            */
     unsigned char     vector;                     /* interrupt vector register            */
-    unsigned char     id_prom[32];                /* board ID Prom                        */
+    volatile unsigned short    *id_prom;                   /* board ID Prom                        */
     unsigned char     ip_pos;                     /* IP under service position            */
     unsigned char     last_chan;                  /* last interrupt input channel number  */
     unsigned char     last_state;                 /* last state of the interrupt channel  */
@@ -163,11 +161,11 @@ int           xy2440GetIoScanpvt( char *name, unsigned char port, unsigned char 
 
 int           xy2440Create( char *pName, unsigned short card, unsigned short slot,
                             char *modeName,
-                            char *intHandlerName, char *usrFunc, short vector, 
+                            char *intHandlerName, VOIDFUNPTR usrFunc, short vector, 
                             short event, short debounce );
 void          xy2440SetConfig( char *pName, unsigned short card, unsigned short slot,
                                unsigned char mode,
-                               unsigned char intHandler, char *usrFunc,
+                               unsigned char intHandler, VOIDFUNPTR usrFunc,
                                unsigned short vector, 
                                unsigned char event, unsigned char debounce, 
                                struct config2440 *pconfig );
