@@ -168,7 +168,7 @@ int xy2440Initialise( void )
 #ifdef NO_EPICS
       if( intConnect(INUM_TO_IVEC((int)plist->vector), plist->isr, (int)plist) )
 #else
-        if (ipmIntConnect(plist->card, plist->slot, plist->vector, plist->isr, (int)plist))
+      if ( ipmIntConnect( plist->card, plist->slot, plist->vector, plist->isr, plist ) )
 #endif
       {
         printf("xy2440Initialise: %s: intConnect failed\n", plist->pName);
@@ -926,9 +926,10 @@ static const iocshFuncDef xy2440CreateFuncDef =
     {"xy2440Create",9,xy2440CreateArgs};
 static void xy2440CreateCallFunc(const iocshArgBuf *arg)
 {
-    xy2440Create(arg[0].sval, arg[1].ival, arg[2].ival, arg[3].sval,
-                 arg[4].sval, arg[5].ival, arg[6].ival, arg[7].ival,
-                 arg[8].ival);
+    xy2440Create(	arg[0].sval, arg[1].ival, arg[2].ival,
+					arg[3].sval, arg[4].sval,
+					(void *) NULL,	/* Can't pass func ptr from cmd line */
+					arg[6].ival, arg[7].ival, arg[8].ival	);
 }
 
 LOCAL void drvXy2440Registrar(void) {
