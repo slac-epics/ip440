@@ -85,7 +85,6 @@ int xy2440Report( int interest )
 {
   int               i;
   int               j;
-  unsigned char     *idptr;
   unsigned short    val;
   struct config2440 *plist;
 
@@ -96,15 +95,10 @@ int xy2440Report( int interest )
     if( interest == 0 || interest == 2 )
     {
       /* interrupt enable status */
-      plist->enable = xy2440Input((unsigned int *)&plist->brd_ptr->ier);
+      plist->enable = plist->brd_ptr->ier;
       /* interrupt vector */
-      plist->vector = xy2440Input((unsigned int *)&plist->brd_ptr->ivr);
+      plist->vector = plist->brd_ptr->ivr;
 
-      idptr = (unsigned char *)plist->brd_ptr + 0x80;
-
-      for(i = 0, j = 1; i < 32; i++, j += 2)
-        plist->id_prom[i] = xy2440Input((unsigned int *)&idptr[j]);
-    
       printf("\nBoard Status Information: %s\n", plist->pName);
       printf("\nBase IO Address:           0x%lx\n", (unsigned long)plist->brd_ptr);
       printf("\nInterrupt Enable Register:   %02x",plist->enable);
@@ -113,7 +107,7 @@ int xy2440Report( int interest )
       printf("\nLast Interrupting State:     %02x",plist->last_state);
       printf("\nIdentification:              ");
       for(i = 0; i < 4; i++)                 /* identification */
-        printf("%c",plist->id_prom[i]);
+        printf("%c", plist->id_prom[i]);
       printf("\nManufacturer's ID:           %x",(unsigned char)plist->id_prom[4]);
       printf("\nIP Model Number:             %x",(unsigned char)plist->id_prom[5]);
       printf("\nRevision:                    %x",(unsigned char)plist->id_prom[6]);
@@ -233,7 +227,7 @@ int xy2440GetIoScanpvt( char *name, unsigned char port, unsigned char point,
 
 int xy2440Create( char *pName, unsigned short card, unsigned short slot,
                   char *modeName,
-                  char *intHandlerName, char *usrFunc, short vector, 
+                  char *intHandlerName, VOIDFUNPTR usrFunc, short vector, 
                   short event, short debounce )
 {
   struct config2440 *plist;
@@ -351,7 +345,7 @@ int xy2440Create( char *pName, unsigned short card, unsigned short slot,
 
 void xy2440SetConfig( char *pName, unsigned short card, unsigned short slot,
                       unsigned char mode,
-                      unsigned char intHandler, char *usrFunc,
+                      unsigned char intHandler, VOIDFUNPTR usrFunc,
                       unsigned short vector,
                       unsigned char event, unsigned char debounce,
                       struct config2440 *pconfig )
@@ -361,6 +355,7 @@ void xy2440SetConfig( char *pName, unsigned short card, unsigned short slot,
   pconfig->card       = card;
   pconfig->slot       = slot;
   pconfig->brd_ptr    = (volatile struct map2440 *)ipmBaseAddr(card, slot, ipac_addrIO);
+  pconfig->id_prom    = (unsigned short *)ipmBaseAddr(card, slot, ipac_addrID);
   pconfig->mask_reg   = OUTPUT_MASK;  /* Mask writes to all outputs */
   pconfig->e_mode     = mode;
   pconfig->intHandler = intHandler;
@@ -408,7 +403,7 @@ void xy2440Config( struct config2440 *pconfig )
   int i;
 
   if((pconfig->param & RESET_INTEN) && (pconfig->enable & RESET))
-    xy2440Output((unsigned int *)&pconfig->brd_ptr->ier, RESET); /* set reset bit */
+    pconfig->brd_ptr->ier = RESET; /* set reset bit */
 
 /*
   Check to see if the Interrupt Vector Register is to be updated.
@@ -417,7 +412,7 @@ void xy2440Config( struct config2440 *pconfig )
 */
 
   if(pconfig->param & VECT )
-    xy2440Output((unsigned int *)&pconfig->brd_ptr->ivr, pconfig->vector);
+    pconfig->brd_ptr->ivr = pconfig->vector;
 
 /*
   If in standard mode and the Mask Register is to be updated, then update it.
@@ -426,7 +421,7 @@ void xy2440Config( struct config2440 *pconfig )
   if((pconfig->e_mode == 0) && (pconfig->param & MASK))
   {
     xy2440SelectBank(BANK0, pconfig);
-    xy2440Output((unsigned int *)&pconfig->brd_ptr->port[7].b_select, (pconfig->mask_reg & 0x3F));
+    pconfig->brd_ptr->port[7].b_select = pconfig->mask_reg & 0x3F;
   }
 
 /*
@@ -435,40 +430,40 @@ void xy2440Config( struct config2440 *pconfig )
     
   if((pconfig->param & ENHANCED) && (pconfig->e_mode != 0))
   {
-    xy2440Output((unsigned int *)&pconfig->brd_ptr->port[7].b_select, 0x07);
-    xy2440Output((unsigned int *)&pconfig->brd_ptr->port[7].b_select, 0x0D);
-    xy2440Output((unsigned int *)&pconfig->brd_ptr->port[7].b_select, 0x06);
-    xy2440Output((unsigned int *)&pconfig->brd_ptr->port[7].b_select, 0x12);
+    pconfig->brd_ptr->port[7].b_select = 0x07;
+    pconfig->brd_ptr->port[7].b_select = 0x0D;
+    pconfig->brd_ptr->port[7].b_select = 0x06;
+    pconfig->brd_ptr->port[7].b_select = 0x12;
 
     if(pconfig->param & MASK)   /* Update Mask Register */
     {
       xy2440SelectBank(BANK0, pconfig);
-      xy2440Output((unsigned int *)&pconfig->brd_ptr->port[7].b_select, (pconfig->mask_reg & 0x3F));
+      pconfig->brd_ptr->port[7].b_select = pconfig->mask_reg & 0x3F;
     }
 
     if(pconfig->param & EVCONTROL)  /* Update Event Control Registers */
     {
       /* Note: xy2440SelectBank 1 writes the event sense polarity for R1,P7,B1 */
       xy2440SelectBank(BANK1, pconfig);
-      xy2440Output((unsigned int *)&pconfig->brd_ptr->port[6].b_select, pconfig->ev_control[0]);
+      pconfig->brd_ptr->port[6].b_select = pconfig->ev_control[0];
     }
 
     if(pconfig->param & DEBCONTROL)  /* Update Debounce Control Register */
     {
       xy2440SelectBank(BANK2, pconfig);
-      xy2440Output((unsigned int *)&pconfig->brd_ptr->port[0].b_select, pconfig->deb_control);
+      pconfig->brd_ptr->port[0].b_select = pconfig->deb_control;
     }
 
     if(pconfig->param & DEBDURATION)  /* Update Debounce Duration Register */
     {
       xy2440SelectBank(BANK2, pconfig);
-      xy2440Output((unsigned int *)&pconfig->brd_ptr->port[1].b_select, pconfig->deb_duration);
+      pconfig->brd_ptr->port[1].b_select = pconfig->deb_duration;
     }
 
     if(pconfig->param & DEBCLOCK)   /* Update Debounce Clock Register */
     {
       xy2440SelectBank(BANK2, pconfig);
-      xy2440Output((unsigned int *)&pconfig->brd_ptr->port[3].b_select, pconfig->deb_clock);
+      pconfig->brd_ptr->port[3].b_select = pconfig->deb_clock;
     }
 
     if((pconfig->param & RESET_INTEN) && (pconfig->enable & INTEN)) /* Int. Enable Reg. */
@@ -476,10 +471,10 @@ void xy2440Config( struct config2440 *pconfig )
       xy2440SelectBank(BANK1, pconfig);
       for(i = 0; i < 6; i++)
       {
-        xy2440Output((unsigned int *)&pconfig->brd_ptr->port[i].b_select, (unsigned char)0);
-        xy2440Output((unsigned int *)&pconfig->brd_ptr->port[i].b_select, (unsigned char)0xFF);
+        pconfig->brd_ptr->port[i].b_select = 0;
+        pconfig->brd_ptr->port[i].b_select = 0xFF;
       }
-      xy2440Output((unsigned int *)&pconfig->brd_ptr->ier, INTEN);
+      pconfig->brd_ptr->ier = INTEN;
     }
   }  /* End of Enhanced Mode set-up */
 }
@@ -490,7 +485,7 @@ unsigned char xy2440SelectBank( unsigned char newBank, struct config2440 *pconfi
   unsigned char oldBank;   /* old bank number */
   unsigned char bankBits;  /* bank select info */
 
-  bankBits = xy2440Input((unsigned int *)&pconfig->brd_ptr->port[7].b_select); /*get current*/
+  bankBits = pconfig->brd_ptr->port[7].b_select; /*get current*/
   oldBank  = ((bankBits & 0xC0) >> 6);                      /* isolate bank select bits */
    
   if(oldBank == newBank)                                    /* same bank? */
@@ -503,7 +498,7 @@ unsigned char xy2440SelectBank( unsigned char newBank, struct config2440 *pconfi
   bankBits &= 0x3F;                                         /* save all but bank sel. bits */
   bankBits |= (newBank << 6);                               /* OR in new bank bits */
 
-  xy2440Output((unsigned int *)&pconfig->brd_ptr->port[7].b_select, bankBits);
+  pconfig->brd_ptr->port[7].b_select = bankBits;
 
   return(oldBank);
 }
@@ -540,7 +535,7 @@ long xy2440Read( char *name, short port, short bit, int readFlag,
       map_ptr = plist->brd_ptr;
       if( readFlag == BIT || readFlag == PORT )
       {
-        *pval = xy2440Input((unsigned *)&map_ptr->port[port].b_select);
+        *pval = (unsigned short ) map_ptr->port[port].b_select;
         if( readFlag == BIT )
         {
           if( *pval & (1 << bit) )
@@ -555,10 +550,10 @@ long xy2440Read( char *name, short port, short bit, int readFlag,
       }
       else if( readFlag == NIBBLE || readFlag == WORD )
       {
-        port0 = xy2440Input((unsigned *)&map_ptr->port[0].b_select);
-        port1 = xy2440Input((unsigned *)&map_ptr->port[1].b_select);
-        port2 = xy2440Input((unsigned *)&map_ptr->port[2].b_select);
-        port3 = xy2440Input((unsigned *)&map_ptr->port[3].b_select);
+        port0 = map_ptr->port[0].b_select;
+        port1 = map_ptr->port[1].b_select;
+        port2 = map_ptr->port[2].b_select;
+        port3 = map_ptr->port[3].b_select;
 
         /* Combine into a 32-bit integer */
         res   = (port3<<24) + (port2<<16) + (port1<<8) + port0;
@@ -616,6 +611,7 @@ void xy2440COS( struct config2440 *plist )
   int             cos_bit;    /* COS bit number 0-15 */
   int             state;      /* state of changed bit */
 
+  epicsInterruptContextMessage("xy2440COS\n");
   /* disable interrupts for this carrier and slot */
   if (ipmIrqCmd(plist->card, plist->slot, 0, ipac_irqDisable) == S_IPAC_badAddress) {    
 #ifdef NO_EPICS
@@ -629,24 +625,26 @@ void xy2440COS( struct config2440 *plist )
         
   for(i = 0; i < MAXPORTS; i++)
   {
-    i_stat = xy2440Input((unsigned int *)&plist->brd_ptr->port[6].b_select); /* interrupt status */
+    i_stat = plist->brd_ptr->port[6].b_select; /* interrupt status */
     p_mask = ( 1 << i);         /* form port interrupt bit mask */
     if((p_mask & i_stat) != 0)  /* port with interrupt pending? */
     {
       for(j = 0; j < MAXBITS; j++)
       {
-        i_pend = xy2440Input((unsigned int *)&plist->brd_ptr->port[i].b_select); /* interrupt sense */
+        i_pend = plist->brd_ptr->port[i].b_select; /* interrupt sense */
 	b_mask = ( 1 << j);         /* form bit interrupt mask */
 	if((b_mask & i_pend) != 0)  /* bit in port with interrupt pending? */
         {  
           /* write 0 to clear the interrupting bit */
-          xy2440Output((unsigned int *)&plist->brd_ptr->port[i].b_select,(~b_mask));
+          plist->brd_ptr->port[i].b_select = ~b_mask;
 
 #if DEBUG
 #ifdef NO_EPICS
           logMsg("xy2440COS: Interrupt on port %d, bit %d\n", i, j, 0, 0, 0, 0);
 #else
-          epicsInterruptContextMessage("xy2440COS: Interrupt on port");
+          char buf[64];
+          sprintf(buf, "xy2440COS: Interrupt on port %d, bit %d\n", i, j);
+          epicsInterruptContextMessage(buf);
 #endif
 #endif
           /*        
@@ -712,7 +710,7 @@ void xy2440COS( struct config2440 *plist )
         }
       }
       /* re-enable sense inputs */
-      xy2440Output((unsigned int *)&plist->brd_ptr->port[i].b_select, 0xFF);
+      plist->brd_ptr->port[i].b_select = 0xFF;
     }
   }
   /* restore bank select */
@@ -742,12 +740,13 @@ void xy2440LEVEL( struct config2440 *plist )
   int             lev_bit;     /* LEV bit number 0-23 */
   int             state;       /* state of changed bit */
 
+  epicsInterruptContextMessage("xy2440LEVEL\n");
   /* disable interrupts for this carrier and slot */
   if (ipmIrqCmd(plist->card, plist->slot, 0, ipac_irqDisable) == S_IPAC_badAddress) {    
 #ifdef NO_EPICS
-      logMsg("xy2440COS: Error in card or slot number\n", 0, 0, 0, 0, 0, 0);
+      logMsg("xy2440LEVEL: Error in card or slot number\n", 0, 0, 0, 0, 0, 0);
 #else
-      epicsInterruptContextMessage("xy2440COS: Error in card or slot number");
+      epicsInterruptContextMessage("xy2440LEVEL: Error in card or slot number");
 #endif
   }
 
@@ -755,24 +754,26 @@ void xy2440LEVEL( struct config2440 *plist )
         
   for(i=0; i<MAXPORTS; i++)
   {
-    i_stat = xy2440Input((unsigned int *)&plist->brd_ptr->port[6].b_select); /* interrupt status */
+    i_stat = plist->brd_ptr->port[6].b_select; /* interrupt status */
     p_mask = ( 1 << i);         /* form port interrupt bit mask */
     if((p_mask & i_stat) != 0)  /* port with interrupt pending? */
     {
       for(j = 0; j < MAXBITS; j++)
       {
-        i_pend = xy2440Input((unsigned int *)&plist->brd_ptr->port[i].b_select); /* interrupt sense */
+        i_pend = plist->brd_ptr->port[i].b_select; /* interrupt sense */
 	b_mask = ( 1 << j);         /* form bit interrupt mask */
 	if((b_mask & i_pend) != 0)  /* bit in port with interrupt pending? */
 	{
           /* write 0 to clear the interrupting bit */
-          xy2440Output((unsigned int *)&plist->brd_ptr->port[i].b_select,(~b_mask));
+          plist->brd_ptr->port[i].b_select = ~b_mask;
 
 #if DEBUG
 #ifdef NO_EPICS
           logMsg("xy2440LEVEL: Interrupt on port %d, bit %d\n", i, j, 0, 0, 0, 0);
 #else
-          epicsInterruptContextMessage("xy2440LEVEL: Interrupt on port");
+	  char buf[64];
+          sprintf(buf, "xy2440LEVEL: Interrupt on port %d bit %d\n", i, j);
+          epicsInterruptContextMessage(buf);
 #endif
 #endif
 
@@ -837,7 +838,7 @@ void xy2440LEVEL( struct config2440 *plist )
 	}
       }
       /* re-enable sense inputs */
-      xy2440Output((unsigned int *)&plist->brd_ptr->port[i].b_select, 0xFF);
+      plist->brd_ptr->port[i].b_select = 0xFF;
     }
   }
   /* restore bank select */
@@ -847,9 +848,9 @@ void xy2440LEVEL( struct config2440 *plist )
   /* Clear and Enable Interrupt from Carrier Board Registers */
   if (ipmIrqCmd(plist->card, plist->slot, 0, ipac_irqClear) == S_IPAC_badAddress) {    
 #ifdef NO_EPICS
-      logMsg("xy2440COS: Error in card or slot number\n", 0, 0, 0, 0, 0, 0);
+      logMsg("xy2440LEVEL: Error in card or slot number\n", 0, 0, 0, 0, 0, 0);
 #else
-      epicsInterruptContextMessage("xy2440COS: Error in card or slot number");
+      epicsInterruptContextMessage("xy2440LEVEL: Error in card or slot number");
 #endif
   }
 }
@@ -913,7 +914,7 @@ static const iocshArg xy2440CreateArg1 = {"card", iocshArgInt};
 static const iocshArg xy2440CreateArg2 = {"slot", iocshArgInt};
 static const iocshArg xy2440CreateArg3 = {"modeName",iocshArgString};
 static const iocshArg xy2440CreateArg4 = {"intHandlerName",iocshArgString};
-static const iocshArg xy2440CreateArg5 = {"usrFunc",iocshArgString};
+static const iocshArg xy2440CreateArg5 = {"usrFunc",iocshArgInt};
 static const iocshArg xy2440CreateArg6 = {"vector", iocshArgInt};
 static const iocshArg xy2440CreateArg7 = {"event", iocshArgInt};
 static const iocshArg xy2440CreateArg8 = {"debounce", iocshArgInt};
@@ -926,7 +927,7 @@ static const iocshFuncDef xy2440CreateFuncDef =
 static void xy2440CreateCallFunc(const iocshArgBuf *arg)
 {
     xy2440Create(arg[0].sval, arg[1].ival, arg[2].ival, arg[3].sval,
-                 arg[4].sval, arg[5].sval, arg[6].ival, arg[7].ival,
+                 arg[4].sval, arg[5].ival, arg[6].ival, arg[7].ival,
                  arg[8].ival);
 }
 
