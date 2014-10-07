@@ -724,6 +724,13 @@ void xy2440COS( struct config2440 *plist )
       epicsInterruptContextMessage("xy2440COS: Error in card or slot number");
 #endif
   }
+  if (ipmIrqCmd(plist->card, plist->slot, 0, ipac_irqEnable) == S_IPAC_badAddress) {    
+#ifdef NO_EPICS
+      logMsg("xy2440COS: Error in card or slot number\n", 0, 0, 0, 0, 0, 0);
+#else
+      epicsInterruptContextMessage("xy2440COS: Error in card or slot number");
+#endif
+  }
 }
 
 
@@ -847,6 +854,13 @@ void xy2440LEVEL( struct config2440 *plist )
 
   /* Clear and Enable Interrupt from Carrier Board Registers */
   if (ipmIrqCmd(plist->card, plist->slot, 0, ipac_irqClear) == S_IPAC_badAddress) {    
+#ifdef NO_EPICS
+      logMsg("xy2440LEVEL: Error in card or slot number\n", 0, 0, 0, 0, 0, 0);
+#else
+      epicsInterruptContextMessage("xy2440LEVEL: Error in card or slot number");
+#endif
+  }
+  if (ipmIrqCmd(plist->card, plist->slot, 0, ipac_irqEnable) == S_IPAC_badAddress) {    
 #ifdef NO_EPICS
       logMsg("xy2440LEVEL: Error in card or slot number\n", 0, 0, 0, 0, 0, 0);
 #else
