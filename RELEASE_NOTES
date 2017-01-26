@@ -34,6 +34,9 @@
 #
 #==============================================================
 #
+R2.4.0-1.0.0:     bhill, 1/?/2017
+	Added Acromag IP440 manual from pcds-trunk via "git cherry-pick 5bcd6bd"
+
 R2.4.0:           bhill, 1/25/2017
 	Added ip440Create, ip440.dbd, libip440.*, etc so this renamed ip440 module follows
 	the same naming scheme as other ip modules.
