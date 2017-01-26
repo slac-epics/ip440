@@ -1,0 +1,6 @@
+# ip440 signal autosave file
+$(SIG).DESC
+$(SIG).ONAM
+$(SIG).OSV
+$(SIG).ZNAM
+$(SIG).ZSV
