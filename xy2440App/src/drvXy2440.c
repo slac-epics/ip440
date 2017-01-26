@@ -78,6 +78,13 @@ struct drvet drvXy2440 = {
   (DRVSUPFUN) xy2440Initialise
 };
 epicsExportAddress(drvet, drvXy2440);
+
+struct drvet drvip440 = {
+  2,
+  (DRVSUPFUN) ip440Report,
+  (DRVSUPFUN) ip440Initialise
+};
+epicsExportAddress(drvet, drvip440);
 #endif
 
 
@@ -150,7 +157,7 @@ int xy2440Report( int interest )
 }
 
 
-int xy2440Initialise( void )
+int _ip440Initialise( const char * functionName )
 {
   struct config2440 *plist;
 
@@ -177,7 +184,7 @@ int xy2440Initialise( void )
         if (ipmIntConnect(plist->card, plist->slot, plist->vector, plist->isr, (int)plist))
 #endif
       {
-        printf("xy2440Initialise: %s: intConnect failed\n", plist->pName);
+        printf("%s: %s: intConnect failed\n", functionName, plist->pName);
         return S_xy2440_intConnectError;
       }
 
@@ -189,6 +196,15 @@ int xy2440Initialise( void )
   return(OK);
 }
 
+int ip440Initialise( void )
+{
+	return _ip440Initialise( "ip440Initialse" );
+}
+
+int xy2440Initialise( void )
+{
+	return _ip440Initialise( "xy2440Initialise" );
+}
 
 #ifndef NO_EPICS
 int xy2440GetIoScanpvt( char *name, unsigned char port, unsigned char point, 
@@ -231,10 +247,17 @@ int xy2440GetIoScanpvt( char *name, unsigned char port, unsigned char point,
 #endif
 
 
-int xy2440Create( char *pName, unsigned short card, unsigned short slot,
-                  char *modeName,
-                  char *intHandlerName, char *usrFunc, short vector, 
-                  short event, short debounce )
+int _ip440Create(
+	const char	*	functionName,
+	char		*	pName,
+	unsigned short	card,
+	unsigned short	slot,
+	char		*	modeName,
+	char		*	intHandlerName,
+	char		*	usrFunc,
+	short			vector, 
+	short			event,
+	short			debounce )
 {
   struct config2440 *plist;
   struct config2440 *pconfig;
@@ -256,38 +279,38 @@ int xy2440Create( char *pName, unsigned short card, unsigned short slot,
       intHandler = LEVEL;
     else
     {
-      printf("xy2440Create: %s: Invalid interrupt handler %s\n", pName, intHandlerName);
+      printf("%s: %s: Invalid interrupt handler %s\n", functionName, pName, intHandlerName);
       return S_xy2440_intHandlerError;
     }
 
     if( vector < 0x0 || vector > 0xFF )
     {
-      printf("xy2440Create: %s: Interrupt vector invalid 0x%x\n", pName, vector);
+      printf("%s: %s: Interrupt vector invalid 0x%x\n", functionName, pName, vector);
       return S_xy2440_vectorInvalid;
     }
 
     if( event < 0x0 || event > 0xFF )
     {
-      printf("xy2440Create: %s: Event Register invalid 0x%x\n", pName, event);
+      printf("%s: %s: Event Register invalid 0x%x\n", functionName, pName, event);
       return S_xy2440_eventRegInvalid;
     }
 
     if( debounce < 0x0 || debounce > 0xFF )
     {
-      printf("xy2440Create: %s: Debounce Register invalid 0x%x\n", pName, debounce);
+      printf("%s: %s: Debounce Register invalid 0x%x\n", functionName, pName, debounce);
       return S_xy2440_debounceRegInvalid;
     }
   }
   else
   {
-    printf("xy2440Create: %s: Board Mode Error %s\n", pName, modeName);
+    printf("%s: %s: Board Mode Error %s\n", functionName, pName, modeName);
     return S_xy2440_modeError;
   }
 
   status = ipmValidate(card, slot, IP_MANUFACTURER_XYCOM, IP_MODEL_XYCOM_2440);
   if( status )
   {
-    printf("xy2440Create: Error %d from ipmValidate\n", status);
+    printf("%s: Error %d from ipmValidate\n", functionName, status);
     return S_xy2440_validateFailed;
   }
 
@@ -296,7 +319,7 @@ int xy2440Create( char *pName, unsigned short card, unsigned short slot,
     ptrXy2440First = malloc(sizeof(struct config2440));
     if( !ptrXy2440First )
     {
-      printf("xy2440Create: First malloc failed\n");
+      printf("%s: First malloc failed\n", functionName );
       return S_xy2440_mallocFailed;
     }
     else
@@ -317,7 +340,7 @@ int xy2440Create( char *pName, unsigned short card, unsigned short slot,
     {
       if( !strcmp(plist->pName, pName) || ((plist->card == card) && (plist->slot == slot)) )
       {
-        printf("xy2440Create: Duplicate device (%s, %d, %d)\n", pName, card, slot);
+        printf("%s: Duplicate device (%s, %d, %d)\n", functionName, pName, card, slot);
         return S_xy2440_duplicateDevice;
       }
       if( plist->pnext == NULL )
@@ -331,7 +354,7 @@ int xy2440Create( char *pName, unsigned short card, unsigned short slot,
     pconfig = malloc(sizeof(struct config2440));
     if( pconfig == NULL )
     {
-      printf("xy2440Create: malloc failed\n");
+      printf("%s: malloc failed\n", functionName );
       return S_xy2440_mallocFailed;
     }
 
@@ -346,6 +369,30 @@ int xy2440Create( char *pName, unsigned short card, unsigned short slot,
     xy2440Config( pconfig );
   }
   return(OK);
+}
+
+int xy2440Create( char *pName, unsigned short card, unsigned short slot,
+                  char *modeName,
+                  char *intHandlerName, char *usrFunc, short vector, 
+                  short event, short debounce )
+{
+	return _ip440Create( "xy2440Create", pName, card, slot, modeName,
+						intHandlerName, usrFunc, vector, event, debounce );
+}
+
+int ip440Create(
+	char		*	pName,
+	unsigned short	card,
+	unsigned short	slot,
+	char		*	modeName,
+	char		*	intHandlerName,
+	char		*	usrFunc,
+	short			vector, 
+	short			event,
+	short			debounce )
+{
+	return _ip440Create( "ip440Create", pName, card, slot, modeName,
+						intHandlerName, usrFunc, vector, event, debounce );
 }
 
 
@@ -930,10 +977,56 @@ static void xy2440CreateCallFunc(const iocshArgBuf *arg)
                  arg[8].ival);
 }
 
+/* ip440Report(int interest) */
+static const iocshArg ip440ReportArg0 = {"interest", iocshArgInt};
+static const iocshArg * const ip440ReportArgs[1] = {&ip440ReportArg0};
+static const iocshFuncDef ip440ReportFuncDef =
+    {"ip440Report",1,ip440ReportArgs};
+static void ip440ReportCallFunc(const iocshArgBuf *args)
+{
+    xy2440Report(args[0].ival);
+}
+
+/* ip440Create( char *pName, unsigned short card, unsigned short slot,
+                  char *modeName,
+                  char *intHandlerName, char *usrFunc, short vector, 
+                  short event, short debounce ) */
+static const iocshArg ip440CreateArg0 = {"pName",iocshArgPersistentString};
+static const iocshArg ip440CreateArg1 = {"card", iocshArgInt};
+static const iocshArg ip440CreateArg2 = {"slot", iocshArgInt};
+static const iocshArg ip440CreateArg3 = {"modeName",iocshArgString};
+static const iocshArg ip440CreateArg4 = {"intHandlerName",iocshArgString};
+static const iocshArg ip440CreateArg5 = {"usrFunc",iocshArgString};
+static const iocshArg ip440CreateArg6 = {"vector", iocshArgInt};
+static const iocshArg ip440CreateArg7 = {"event", iocshArgInt};
+static const iocshArg ip440CreateArg8 = {"debounce", iocshArgInt};
+static const iocshArg * const ip440CreateArgs[9] = {
+    &ip440CreateArg0, &ip440CreateArg1, &ip440CreateArg2, &ip440CreateArg3,
+    &ip440CreateArg4, &ip440CreateArg5, &ip440CreateArg6, &ip440CreateArg7,
+    &ip440CreateArg8};
+static const iocshFuncDef ip440CreateFuncDef =
+    {"ip440Create",9,ip440CreateArgs};
+static void ip440CreateCallFunc(const iocshArgBuf *arg)
+{
+    ip440Create(arg[0].sval, arg[1].ival, arg[2].ival, arg[3].sval,
+                 arg[4].sval, arg[5].sval, arg[6].ival, arg[7].ival,
+                 arg[8].ival);
+}
+
 LOCAL void drvXy2440Registrar(void) {
     iocshRegister(&xy2440ReportFuncDef,xy2440ReportCallFunc);
     iocshRegister(&xy2440CreateFuncDef,xy2440CreateCallFunc);
+    iocshRegister(&ip440ReportFuncDef,ip440ReportCallFunc);
+    iocshRegister(&ip440CreateFuncDef,ip440CreateCallFunc);
 }
 epicsExportRegistrar(drvXy2440Registrar);
+
+LOCAL void drvip440Registrar(void) {
+    iocshRegister(&xy2440ReportFuncDef,xy2440ReportCallFunc);
+    iocshRegister(&xy2440CreateFuncDef,xy2440CreateCallFunc);
+    iocshRegister(&ip440ReportFuncDef,ip440ReportCallFunc);
+    iocshRegister(&ip440CreateFuncDef,ip440CreateCallFunc);
+}
+epicsExportRegistrar(drvip440Registrar);
 
 #endif

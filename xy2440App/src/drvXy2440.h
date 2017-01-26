@@ -159,6 +159,8 @@ struct config2440
 
 int           xy2440Report( int interest );
 int           xy2440Initialise( void );
+int           ip440Report( int interest );
+int           ip440Initialise( void );
 
 #ifndef NO_EPICS
 int           xy2440GetIoScanpvt( char *name, unsigned char port, unsigned char point, 
@@ -166,6 +168,10 @@ int           xy2440GetIoScanpvt( char *name, unsigned char port, unsigned char 
 #endif
 
 int           xy2440Create( char *pName, unsigned short card, unsigned short slot,
+                            char *modeName,
+                            char *intHandlerName, char *usrFunc, short vector, 
+                            short event, short debounce );
+int           ip440Create(  char *pName, unsigned short card, unsigned short slot,
                             char *modeName,
                             char *intHandlerName, char *usrFunc, short vector, 
                             short event, short debounce );
