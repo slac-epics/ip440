@@ -34,6 +34,12 @@
 #
 #==============================================================
 #
+R2.4.0:           bhill, 1/25/2017
+	Added ip440Create, ip440.dbd, libip440.*, etc so this renamed ip440 module follows
+	the same naming scheme as other ip modules.
+	The prior xy2440Create, xy2440.dbd, libxy2440.* and such are still supported for
+	backward compatibility.
+
 R2.3.0:           bhill, 1/24/2017
 				  Creating new release R2.3.0 to avoid confusion w/ prior pcds R2.2.* releases
                   Also updated to new git workflow base build support
