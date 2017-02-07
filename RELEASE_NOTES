@@ -5,36 +5,16 @@
 #  Rem: This files describes release notes for
 #       the Xycom 2440 driver and device support.
 #
-#  Auth: dd-mmm-yyyy, Andy Foster        (USERNAME)
-#  Rev:  dd-mmm-yyyy, Reviewer's Name    (USERNAME)
-#--------------------------------------------------------------
-#  Mod:
-#        20-Mar-2010, S. Hoobler         (SONYA):
-#           release xy2440-R1-0-lcls3
-#        23-Feb-2010, K. Luchini         (LUCHINI):
-#           release xy2440-R1-0-lcls2
-#        29-Apr-2009, K. Luchini         (LUCHINI):
-#           release xy2440-R1-0-lcls1
-#        27-Apr-2009, K. Luchini         (LUCHINI):
-#           release xy2440-R2-0-0
-#        06-Nov-2008, K. Luchini         (LUCHINI):
-#           release xy2440-R1-0-7
-#           to volatile
-#        21-Feb-2008, K. Luchini         (LUCHINI):
-#           release xy2440-R1-0-6
-#        10-Dec-2007, K. Luchini         (LUCHINI):
-#           release xy2440-R1-0-5
-#        08-Oct-2007, K. Luchini         (LUCHINI):
-#           release xy2440-R1-0-4
-#           release xy2440-R1-0-3
-#        30-Aug-2007, K. Luchini         (LUCHINI):
-#           release xy2440-R1-0-2
-#        29-Aug-2007, K. Luchini         (LUCHINI):
-#           release xy2440-R1-0-1 
-#
 #==============================================================
 #
-R2.4.0-1.0.0:     bhill, 1/?/2017
+R2.4.0-1.0.0:     02-06-2017	Bruce Hill
+	Merged in endian-fix.patch fix from R2.4.0-2.branch.
+		Testing shows it works for both VME and linux, as the ip440 is an 8 bit module and
+		Richard's 9378f4879 commit, "endianness support", changed all the I/O to 16 bit access.
+		This allows the hardware on the carrier card and the host's PCI bridge chip to handle the byte order.
+	Removed unneeded copies of xipIo code in ip445 which were cloned from the ipac module.
+		This code is already available just by defining the IPAC macro in configure/RELEASE
+	Applied ip440-signal-template-arch-req.patch to add archive and autosave template request files for ip440 signals.
 	Added Acromag IP440 manual from pcds-trunk via "git cherry-pick 5bcd6bd"
 
 R2.4.0:           bhill, 1/25/2017

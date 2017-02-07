@@ -1,0 +1,40 @@
+diff --git a/xy2440App/Db/Makefile b/xy2440App/Db/Makefile
+index 9a5629c..11556cc 100644
+--- a/xy2440App/Db/Makefile
++++ b/xy2440App/Db/Makefile
+@@ -17,6 +17,10 @@ DB += ip440.template
+ DB += xy2440.db
+ DB += ip440.db
+ 
++ARCHIVE += ip440-signal.tpl-arch
++
++REQ += ip440-signal.tpl-req
++
+ #----------------------------------------------------
+ # If <anyname>.db template is not named <anyname>*.template add
+ # <anyname>_TEMPLATE = <templatename>
+diff --git a/xy2440App/Db/ip440-signal.tpl-arch b/xy2440App/Db/ip440-signal.tpl-arch
+new file mode 100644
+index 0000000..a007671
+--- /dev/null
++++ b/xy2440App/Db/ip440-signal.tpl-arch
+@@ -0,0 +1,7 @@
++# ip440 signal archive file
++$(SIG).VAL		1	monitor
++$(SIG).DESC		10
++$(SIG).ONAM		10
++$(SIG).OSV		10
++$(SIG).ZNAM		10
++$(SIG).ZSV		10
+diff --git a/xy2440App/Db/ip440-signal.tpl-req b/xy2440App/Db/ip440-signal.tpl-req
+new file mode 100644
+index 0000000..bc3e1f0
+--- /dev/null
++++ b/xy2440App/Db/ip440-signal.tpl-req
+@@ -0,0 +1,6 @@
++# ip440 signal autosave file
++$(SIG).DESC
++$(SIG).ONAM
++$(SIG).OSV
++$(SIG).ZNAM
++$(SIG).ZSV
