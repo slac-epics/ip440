@@ -7,6 +7,10 @@
 #
 #==============================================================
 #
+R2.4.0-1.1.0:     02-09-2017	Bruce Hill
+	Restored xipIo code as it's no longer in most versions of the ipac module.
+	Cleaned up some more build warnings re passing usrFunc as a char *
+
 R2.4.0-1.0.0:     02-06-2017	Bruce Hill
 	Merged in endian-fix.patch fix from R2.4.0-2.branch.
 		Testing shows it works for both VME and linux, as the ip440 is an 8 bit module and
