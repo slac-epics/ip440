@@ -248,7 +248,7 @@ int _ip440Create(
 	unsigned short	slot,
 	char		*	modeName,
 	char		*	intHandlerName,
-	char		*	usrFunc,
+	VOIDFUNPTR		usrFunc,
 	short			vector, 
 	short			event,
 	short			debounce )
@@ -380,7 +380,7 @@ int ip440Create(
 	unsigned short	slot,
 	char		*	modeName,
 	char		*	intHandlerName,
-	char		*	usrFunc,
+	VOIDFUNPTR		usrFunc,
 	short			vector, 
 	short			event,
 	short			debounce )
@@ -435,7 +435,7 @@ void xy2440SetConfig( char *pName, unsigned short card, unsigned short slot,
       pconfig->ev_control[1] = 0;
       pconfig->isr           = xy2440LEVEL; /* Connect ISR */
     }
-    pconfig->usrFunc      = (VOIDFUNPTR)usrFunc; /* User defined function */
+    pconfig->usrFunc      = usrFunc; /* User defined function */
     pconfig->deb_clock    = 1;         /* Use the 8 MHz IP bus clock (recommended) */
     pconfig->deb_control  = 0xF;       /* Enable debounced operation for all bits of all ports */
     pconfig->deb_duration = debounce;  /* Debounce duration */
@@ -954,7 +954,7 @@ static void xy2440ReportCallFunc(const iocshArgBuf *args)
 
 /* xy2440Create( char *pName, unsigned short card, unsigned short slot,
                   char *modeName,
-                  char *intHandlerName, char *usrFunc, short vector, 
+                  char *intHandlerName, VOIDFUNPTR usrFunc, short vector, 
                   short event, short debounce ) */
 static const iocshArg xy2440CreateArg0 = {"pName",iocshArgPersistentString};
 static const iocshArg xy2440CreateArg1 = {"card", iocshArgInt};
@@ -974,7 +974,7 @@ static const iocshFuncDef xy2440CreateFuncDef =
 static void xy2440CreateCallFunc(const iocshArgBuf *arg)
 {
     xy2440Create(arg[0].sval, arg[1].ival, arg[2].ival, arg[3].sval,
-                 arg[4].sval, arg[5].ival, arg[6].ival, arg[7].ival,
+                 arg[4].sval, NULL,        arg[5].ival, arg[7].ival,
                  arg[8].ival);
 }
 
@@ -990,14 +990,14 @@ static void ip440ReportCallFunc(const iocshArgBuf *args)
 
 /* ip440Create( char *pName, unsigned short card, unsigned short slot,
                   char *modeName,
-                  char *intHandlerName, char *usrFunc, short vector, 
+                  char *intHandlerName, VOIDFUNPTR usrFunc, short vector, 
                   short event, short debounce ) */
 static const iocshArg ip440CreateArg0 = {"pName",iocshArgPersistentString};
 static const iocshArg ip440CreateArg1 = {"card", iocshArgInt};
 static const iocshArg ip440CreateArg2 = {"slot", iocshArgInt};
 static const iocshArg ip440CreateArg3 = {"modeName",iocshArgString};
 static const iocshArg ip440CreateArg4 = {"intHandlerName",iocshArgString};
-static const iocshArg ip440CreateArg5 = {"usrFunc",iocshArgString};
+static const iocshArg ip440CreateArg5 = {"usrFunc",iocshArgInt};
 static const iocshArg ip440CreateArg6 = {"vector", iocshArgInt};
 static const iocshArg ip440CreateArg7 = {"event", iocshArgInt};
 static const iocshArg ip440CreateArg8 = {"debounce", iocshArgInt};
@@ -1010,7 +1010,7 @@ static const iocshFuncDef ip440CreateFuncDef =
 static void ip440CreateCallFunc(const iocshArgBuf *arg)
 {
     ip440Create(arg[0].sval, arg[1].ival, arg[2].ival, arg[3].sval,
-                 arg[4].sval, arg[5].sval, arg[6].ival, arg[7].ival,
+                 arg[4].sval, NULL,  arg[6].ival, arg[7].ival,
                  arg[8].ival);
 }
 

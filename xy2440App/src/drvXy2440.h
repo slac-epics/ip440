@@ -167,7 +167,7 @@ int           xy2440GetIoScanpvt( char *name, unsigned char port, unsigned char 
 
 int           xy2440Create( char *pName, unsigned short card, unsigned short slot,
                             char *modeName,
-                            char *intHandlerName, char *usrFunc, short vector, 
+                            char *intHandlerName, VOIDFUNPTR usrFunc, short vector, 
                             short event, short debounce );
 int           ip440Create(  char *pName, unsigned short card, unsigned short slot,
                             char *modeName,
