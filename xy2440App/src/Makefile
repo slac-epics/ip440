@@ -10,6 +10,7 @@ DBD   += Xy2440.dbd
 # Source files (for depends target):
 LIBSRCS += drvXy2440.c
 LIBSRCS += devXy2440.c
+LIBSRCS += xipIo.c 
 
 # Link everything into a library:
 LIBRARY_IOC_vxWorks = Xy2440 ip440
