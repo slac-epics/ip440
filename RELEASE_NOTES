@@ -34,6 +34,11 @@
 #
 #==============================================================
 #
+R2.5.0:           bhill, 2/10/2017
+	Changed DTYP for ip440 to IP440.
+	Was ACROMAG-IP440 in some files and ACROMAG-440 in others.
+	New scheme matches other ip* modules
+
 R2.4.0:           bhill, 1/25/2017
 	Added ip440Create, ip440.dbd, libip440.*, etc so this renamed ip440 module follows
 	the same naming scheme as other ip modules.
