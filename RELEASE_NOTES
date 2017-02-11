@@ -7,6 +7,14 @@
 #
 #==============================================================
 #
+R2.5.0-1.0.0:     02-10-2017	Bruce Hill
+	Same as R2.4.0-1.2.0.  Updated version to match updated master version.
+
+R2.5.0:           bhill, 2/10/2017
+	Changed DTYP for ip440 to IP440.
+	Was ACROMAG-IP440 in some files and ACROMAG-440 in others.
+	New scheme matches other ip* modules
+
 R2.4.0-1.2.0:     02-10-2017	Bruce Hill
 	Changed DTYP from ACROMAG-IP440 to IP440 to match LCLS branch and other ip* modules
 
