@@ -183,8 +183,6 @@ void          xy2440Config( struct config2440 *pconfig );
 unsigned char xy2440SelectBank( unsigned char newBank, struct config2440 *pconfig );
 long          xy2440Read( char *name, short port, short bit, int readFlag,
                           unsigned short *pval, int debug );
-unsigned char xy2440Input( unsigned int *addr );
-void          xy2440Output( unsigned int *addr, int b );
 void          xy2440COS( struct config2440 *pconfig );
 void          xy2440LEVEL( struct config2440 *pconfig );
 void          xy2440WhichHandler( char *name, unsigned char *handler );

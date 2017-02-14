@@ -61,7 +61,6 @@ Copyright (c) 2002 Andy Foster
 #include "epicsInterrupt.h"
 #include "epicsExport.h"
 #include "iocsh.h"
-#include "basicIoOps.h"
 #endif
 
 #include "drvIpac.h"
@@ -175,7 +174,7 @@ int _ip440Initialise( const char * functionName )
 #ifdef NO_EPICS
       if( intConnect(INUM_TO_IVEC((int)plist->vector), plist->isr, (int)plist) )
 #else
-        if (ipmIntConnect(plist->card, plist->slot, plist->vector, plist->isr, (int)plist))
+      if (ipmIntConnect(plist->card, plist->slot, plist->vector, plist->isr, plist))
 #endif
       {
         printf("%s: %s: intConnect failed\n", functionName, plist->pName);
@@ -630,18 +629,6 @@ long xy2440Read( char *name, short port, short bit, int readFlag,
     }
   }
   return(OK);
-}
-
-
-unsigned char xy2440Input( unsigned int *addr ) 
-{
-  return((unsigned char) in_8((volatile unsigned char *)addr));
-}
-
-
-void xy2440Output( unsigned int *addr, int b )
-{
-  *((volatile char *)addr) = (char)b; 
 }
 
 
