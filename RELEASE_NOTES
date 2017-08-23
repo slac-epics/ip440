@@ -7,6 +7,9 @@
 #
 #==============================================================
 #
+R2.5.0-1.1.1:	  08-23-2017    Marcio Donadio
+        Updated to ipac/R2.14-0.1.0
+
 R2.5.0-1.1.0:     02-13-2017	Bruce Hill
 	Updated to ipac/R2.8-1.2.1 for linux pciE support and removed obsolete dependency on miscUtils
 
