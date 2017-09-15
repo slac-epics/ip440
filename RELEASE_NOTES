@@ -34,6 +34,9 @@
 #
 #==============================================================
 #
+R2.5.1:           Marcio Donadio, 9/14/2017
+	Build against ipac/R2.11-1.5.1.
+
 R2.5.0:           bhill, 2/10/2017
 	Changed DTYP for ip440 to IP440.
 	Was ACROMAG-IP440 in some files and ACROMAG-440 in others.
