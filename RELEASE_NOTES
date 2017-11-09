@@ -7,7 +7,10 @@
 #
 #==============================================================
 #
-R2.5.1:           Marcio Donadio, 9/14/2017
+R2.6.0:		Marcio Donadio, 11/8/2017
+	ip440Report function was not defined
+
+R2.5.1:         Marcio Donadio, 9/14/2017
 	Build against ipac/R2.11-1.5.1.
 
 R2.5.0-1.1.1:	  08-23-2017    Marcio Donadio
