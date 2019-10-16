@@ -67,6 +67,7 @@ static long init_mbbiDirect();
 static long mbbiDirect_ioinfo();
 static long read_mbbiDirect();
 
+#ifndef USE_TYPED_DSET
 typedef struct {
 	long		number;
 	DEVSUPFUN	report;
@@ -75,22 +76,42 @@ typedef struct {
 	DEVSUPFUN	get_ioint_info;
 	DEVSUPFUN	read_write;
 	} BINARYDSET;
-
-
 BINARYDSET devBiXy2440         = {6, NULL, NULL, init_bi,   bi_ioinfo,   read_bi};
-epicsExportAddress(dset, devBiXy2440);
 BINARYDSET devMbbiXy2440       = {6, NULL, NULL, init_mbbi, mbbi_ioinfo, read_mbbi};
-epicsExportAddress(dset, devMbbiXy2440);
 BINARYDSET devMbbiDirectXy2440 = {6, NULL, NULL, init_mbbiDirect, mbbiDirect_ioinfo, 
                                   read_mbbiDirect};
+#else
+struct {
+    dset     commmon;
+    long(*read_bi)(struct biRecord *prec);
+} devBiXy2440 = { {6, NULL, NULL, init_bi,   bi_ioinfo},   read_bi};
+
+struct {
+    dset     common;
+    long(*read_mbbi)(struct mbbiRecord *prec);
+} devMbbiXy2440 = { {6, NULL, NULL, init_mbbi, mbbi_ioinfo}, read_mbbi};
+
+struct {
+    dset     common;
+    long(*read_mbbiDirect)(struct mbbiDirectRecord *prec);
+} devMbbiDirectXy2440 = { {6, NULL, NULL, init_mbbiDirect, mbbiDirect_ioinfo},
+                          read_mbbiDirect};
+
+#endif
+
+epicsExportAddress(dset, devBiXy2440);
+epicsExportAddress(dset, devMbbiXy2440);
 epicsExportAddress(dset, devMbbiDirectXy2440);
+
+
 
 /* Support Function */
 static void handleError( void *prec, int *status, int error, char *errString, int pactValue );
 
 
-static long init_bi(struct biRecord *pbi)
+static long init_bi(struct dbCommon *prec)
 {
+  struct biRecord *pbi = (struct biRecord *) prec;
   xipIo_t        *pxip;
   int            status;
   unsigned char  handler;
@@ -167,8 +188,9 @@ static long init_bi(struct biRecord *pbi)
 }
 
 
-static long bi_ioinfo( int cmd, struct biRecord *pbi, IOSCANPVT	*ppvt )
+static long bi_ioinfo( int cmd, struct dbCommon *prec, IOSCANPVT	*ppvt )
 {
+  struct biRecord *pbi = (struct biRecord *) prec;
   xipIo_t *pxip;
   int     status;
   int     recType = BI;
@@ -206,8 +228,9 @@ static long read_bi(struct biRecord *pbi)
 }
 
 
-static long init_mbbi(struct mbbiRecord *pmbbi)
+static long init_mbbi(struct dbCommon *prec)
 {
+  struct mbbiRecord *pmbbi = (struct mbbiRecord *) prec;
   xipIo_t        *pxip;
   int            status;
   unsigned char  handler;
@@ -284,8 +307,9 @@ static long init_mbbi(struct mbbiRecord *pmbbi)
 }
 
 
-static long mbbi_ioinfo( int cmd, struct mbbiRecord *pmbbi, IOSCANPVT *ppvt )
+static long mbbi_ioinfo( int cmd, struct dbCommon *prec, IOSCANPVT *ppvt )
 {
+  struct mbbiRecord *pmbbi = (struct mbbiRecord *) prec;
   xipIo_t *pxip;
   int     status;
   int     recType = MBBI;
@@ -323,8 +347,9 @@ static long read_mbbi(struct mbbiRecord	*pmbbi)
 }
 
 
-static long init_mbbiDirect(struct mbbiDirectRecord *pmbbiDirect)
+static long init_mbbiDirect(struct dbCommon *prec)
 {
+  struct mbbiDirectRecord *pmbbiDirect = (struct mbbiDirectRecord *) prec;
   xipIo_t        *pxip;
   int            status;
   unsigned char  handler;
@@ -401,9 +426,10 @@ static long init_mbbiDirect(struct mbbiDirectRecord *pmbbiDirect)
 }
 
 
-static long mbbiDirect_ioinfo( int cmd, struct mbbiDirectRecord *pmbbiDirect, 
+static long mbbiDirect_ioinfo( int cmd, struct dbCommon *prec, 
                                IOSCANPVT *ppvt )
 {
+  struct mbbiDirectRecord *pmbbiDirect = (struct mbbiDirectRecord *) prec;
   xipIo_t *pxip;
   int     status;
   int     recType = MBBI_DIRECT;

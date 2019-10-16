@@ -155,10 +155,17 @@ struct config2440
 #endif
 };
 
-int           xy2440Report( int interest );
-int           xy2440Initialise( void );
-int           ip440Report( int interest );
-int           ip440Initialise( void );
+#ifndef USE_TYPED_DRVET
+int          xy2440Report( int interest );
+int          xy2440Initialise( void );
+int          ip440Report( int interest );
+int          ip440Initialise( void );
+#else
+long         xy2440Report( int interest );
+long         xy2440Initialise( void );
+long         ip440Report( int interest );
+long         ip440Initialise( void );
+#endif
 
 #ifndef NO_EPICS
 int           xy2440GetIoScanpvt( char *name, unsigned char port, unsigned char point, 

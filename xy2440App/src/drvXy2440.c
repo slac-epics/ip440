@@ -71,27 +71,47 @@ LOCAL struct config2440 *ptrXy2440First = NULL;
 #ifndef NO_EPICS
 /* EPICS Driver Support Entry Table */
 
+#ifndef USE_TYPED_DRVET
 struct drvet drvXy2440 = {
   2,
   (DRVSUPFUN) xy2440Report,
   (DRVSUPFUN) xy2440Initialise
 };
+#else
+drvet drvXy2440 = {2, xy2440Report, xy2440Initialise};
+#endif
+
 epicsExportAddress(drvet, drvXy2440);
 
+#ifndef USE_TYPED_DRVET
 struct drvet drvip440 = {
   2,
   (DRVSUPFUN) ip440Report,
   (DRVSUPFUN) ip440Initialise
 };
-epicsExportAddress(drvet, drvip440);
+#else
+drvet drvip440 = {2, ip440Report, ip440Initialise};
 #endif
 
+
+epicsExportAddress(drvet, drvip440);
+
+#endif
+
+#ifndef USE_TYPED_DRVET
 int ip440Report(int interest)
+#else
+long ip440Report(int interest)
+#endif
 {
   return xy2440Report(interest);
 }
 
+#ifndef USE_TYPED_DRVET
 int xy2440Report( int interest )
+#else
+long xy2440Report( int interest )
+#endif
 {
   int               i;
   int               j;
@@ -193,12 +213,20 @@ int _ip440Initialise( const char * functionName )
   return(OK);
 }
 
+#ifndef USE_TYPED_DRVET
 int ip440Initialise( void )
+#else
+long ip440Initialise( void )
+#endif
 {
 	return _ip440Initialise( "ip440Initialse" );
 }
 
+#ifndef USE_TYPED_DRVET
 int xy2440Initialise( void )
+#else
+long xy2440Initialise( void )
+#endif
 {
 	return _ip440Initialise( "xy2440Initialise" );
 }

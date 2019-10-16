@@ -2,6 +2,8 @@
 TOP = ../..
 include $(TOP)/configure/CONFIG
 
+USR_CFLAGS += -DUSE_TYPED_RSET -DUSE_TYPED_DSET -DUSE_TYPED_DRVET
+
 HTMLS += xycomIpac.html
 
 DBD   += ip440.dbd
