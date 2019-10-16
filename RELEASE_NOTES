@@ -7,6 +7,10 @@
 #
 #==============================================================
 #
+R2.6.1          Kukhee Kim, 10/16/2019
+        use type-safe DSET and DRVET
+        use ipac R2.14-0.1.0
+
 R2.6.0:		Marcio Donadio, 11/8/2017
 	ip440Report function was not defined
 
