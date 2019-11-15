@@ -7,6 +7,9 @@
 #
 #==============================================================
 #
+R2.6.2          Marcio Donadio, 11/15/2019
+        Upgraded to ipac/R2.15-1.0.0
+
 R2.6.1          Kukhee Kim, 10/16/2019
         use type-safe DSET and DRVET
         use ipac R2.14-0.2.0
