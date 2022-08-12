@@ -7,6 +7,9 @@
 #
 #==============================================================
 #
+R2.6.3   08-12-2022  K. Luchini 
+         Add build forlinuxRT-x86_64 in config/CONFIG_SITE 
+
 R2.6.2:  Kukhee Kim - Oct 19, 2019
          Using IPAC R2.14-0.2.0
 
