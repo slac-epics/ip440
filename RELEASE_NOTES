@@ -7,6 +7,10 @@
 #
 #==============================================================
 #
+R2.6.4   10-17-2022  V. Esposito
+         Add build for rhel7, use IPAC R2.15-1.0.2
+
+
 R2.6.3   08-12-2022  K. Luchini 
          Add build forlinuxRT-x86_64 in config/CONFIG_SITE 
 
