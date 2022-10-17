@@ -86,6 +86,10 @@ struct drvet drvip440 = {
 epicsExportAddress(drvet, drvip440);
 #endif
 
+int ip440Report( int interest )
+{
+    return xy2440Report(interest);
+}
 
 int xy2440Report( int interest )
 {

@@ -8,3 +8,5 @@ html
 doc
 O.*
 *.log
+archive
+autosave
